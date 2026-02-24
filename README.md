@@ -1,13 +1,26 @@
 
 # Welcome to the presentation about
 
+
+Works on my machine.
+
+
+
+
+
 # Nix
 
 This is not NixOS.
 
 To be clear:
 
-Codenixos != nix != home-manager
+```bash
+nixos != nix != home-manager
+```
+
+NixOS = operating system
+Nix = package manager + build system
+Home Manager = user-level config layer
 
 This talk is about Nix as a development environment tool for offensive security.
 
@@ -187,7 +200,12 @@ You define:
 
 Then you run:
 
-Codenix develop
+```bash
+# just to make sure the vendor folder is not written somewhere you do not want:
+mkdir /tmp/nix-for-offensive-security
+cd /tmp/nix-for-offensive-security
+nix develop
+```
 
 And you enter that exact environment.
 
@@ -231,7 +249,7 @@ python3 ./22739.py wlp0<redacted>
 It fails with:
 
 ```bash
-CodePyLorcon2.Lorcon2Exception:  
+PyLorcon2.Lorcon2Exception:  
 failed to create monitor interface wlp0<redacted>:wlp0<redacted>
 ```
 
@@ -287,7 +305,12 @@ You do not need to clone the repository.
 
 You can enter the environment directly from GitHub:
 
-Codenix develop github:esp0xdeadbeef/nix-for-offensive-security
+```bash
+# just to make sure the vendor folder is not written somewhere you do not want:
+mkdir /tmp/nix-for-offensive-security
+cd /tmp/nix-for-offensive-security
+nix develop github:esp0xdeadbeef/nix-for-offensive-security
+```
 
 That command:
 
@@ -306,7 +329,11 @@ No manual dependency resolution.
 
 You can even pin a specific revision:
 
-Codenix develop github:esp0xdeadbeef/nix-for-offensive-security/<commit>
+```bash
+mkdir /tmp/nix-for-offensive-security
+cd /tmp/nix-for-offensive-security
+nix develop github:esp0xdeadbeef/nix-for-offensive-security/<commit>
+```
 
 That guarantees you are using the exact same environment as the author at that commit.
 
@@ -345,7 +372,9 @@ But Nix gives you explicit control.
 
 After you are done with a lab:
 
-Codenix-collect-garbage -d
+```bash
+nix-collect-garbage -d
+```
 
 This deletes all unused generations and unreferenced store paths.
 
@@ -359,11 +388,15 @@ It only removes things that are no longer referenced.
 
 You can inspect store usage:
 
-Codedu -sh /nix/store
+```bash
+du -sh /nix/store
+```
 
 Or more detailed:
 
-Codenix path-info -Sh /nix/store/*
+```bash
+nix path-info -Sh /nix/store/*
+```
 
 * * *
 
@@ -397,6 +430,8 @@ With Nix:
     
 
 ```bash
+mkdir /tmp/nix-for-offensive-security
+cd /tmp/nix-for-offensive-security
 nix develop github:esp0xdeadbeef/nix-for-offensive-security
 ```
 

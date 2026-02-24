@@ -1,0 +1,102 @@
+➜  nix-for-offensive-security git:(main) ✗ ./setup-lxc-archlinux.sh
+============================================================
+After the demo, remove the container with:
+  lxc-destroy test-container
+============================================================
+
+[*] Creating archlinux container: test-container
+lxc-create: test-container: ../src/lxc/tools/lxc_create.c: lxc_create_main: 265 Container already exists
+[*] Starting test-container
+lxc-start: test-container: ../src/lxc/tools/lxc_start.c: lxc_start_main: 257 Container is already running
+[*] Updating system and installing Nix inside container...
+:: Synchronizing package databases...
+ core is up to date
+ extra is up to date
+:: Starting full system upgrade...
+ there is nothing to do
+warning: nix-2.33.3-2 is up to date -- reinstalling
+resolving dependencies...
+looking for conflicting packages...
+
+Packages (1) nix-2.33.3-2
+
+Total Installed Size:  15.16 MiB
+Net Upgrade Size:       0.00 MiB
+
+:: Proceed with installation? [Y/n]
+(1/1) checking keys in keyring                                                                                            [#########################################################################] 100%
+(1/1) checking package integrity                                                                                          [#########################################################################] 100%
+(1/1) loading package files                                                                                               [#########################################################################] 100%
+(1/1) checking for file conflicts                                                                                         [#########################################################################] 100%
+(1/1) checking available disk space                                                                                       [#########################################################################] 100%
+:: Processing package changes...
+(1/1) reinstalling nix                                                                                                    [#########################################################################] 100%
+:: Running post-transaction hooks...
+(1/5) Creating system user accounts...
+(2/5) Creating temporary files...
+(3/5) Reloading system manager configuration...
+(4/5) Restarting marked services...
+(5/5) Arming ConditionNeedsUpdate...
+[*] Enabling nix-command and flakes...
+
+If you do NOT configure this globally, you must use:
+  nix <cmd> --extra-experimental-features nix-command \
+      --extra-experimental-features flakes
+
+[*] Building flake (first run may take 10-15 minutes, coffee?)...
+
+[legacy exploit shell ready]
+python  -> Python 2.7.18
+python3 -> Python 3.6.13
+
+bash-5.3# exit
+exit
+[*] Attaching to container...
+[root@test-container /]# which python3
+which: no python3 in (/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin)
+[root@test-container /]# which python2
+which: no python2 in (/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin)
+[root@test-container /]# which python
+which: no python in (/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin)
+[root@test-container /]# nix develop github:esp0xdeadbeef/nix-for-offensive-security
+
+[legacy exploit shell ready]
+python  -> Python 2.7.18
+python3 -> Python 3.6.13
+
+bash-5.3# which python3
+/nix/store/abiagjx0ckg2adfd0m8ksnlx4ijf9cmy-python3-3.6.13/bin/python3
+bash-5.3# which python2
+/nix/store/qlfall352ps00z00cda6by3xrd2m88fv-python-2.7.18/bin/python2
+bash-5.3# which openssl
+/nix/store/5phzsq8z7g5d82zfnm6bz5bvi2if2am0-openssl-1.1.1k-bin/bin/openssl
+bash-5.3# exit
+exit
+[root@test-container /]# which openssl
+/usr/sbin/openssl
+[root@test-container /]# openssl --version
+OpenSSL 3.6.1 27 Jan 2026 (Library: OpenSSL 3.6.1 27 Jan 2026)
+[root@test-container /]# nix develop github:esp0xdeadbeef/nix-for-offensive-security
+
+[legacy exploit shell ready]
+python  -> Python 2.7.18
+python3 -> Python 3.6.13
+
+bash-5.3# which openssl
+/nix/store/5phzsq8z7g5d82zfnm6bz5bvi2if2am0-openssl-1.1.1k-bin/bin/openssl
+bash-5.3# openssl --version
+Invalid command '--version'; type "help" for a list.
+bash-5.3# openssl version
+OpenSSL 1.1.1k  25 Mar 2021
+bash-5.3# ldd $(which python3)
+	linux-vdso.so.1 (0x00007ffff7fd0000)
+	libpython3.6m.so.1.0 => /nix/store/abiagjx0ckg2adfd0m8ksnlx4ijf9cmy-python3-3.6.13/lib/libpython3.6m.so.1.0 (0x00007ffff7c00000)
+	libpthread.so.0 => /nix/store/ikl21vjfq900ccbqg1xasp83kadw6q8y-glibc-2.32-46/lib/libpthread.so.0 (0x00007ffff7fa9000)
+	libdl.so.2 => /nix/store/ikl21vjfq900ccbqg1xasp83kadw6q8y-glibc-2.32-46/lib/libdl.so.2 (0x00007ffff7fa4000)
+	libcrypt.so.1 => /nix/store/ikl21vjfq900ccbqg1xasp83kadw6q8y-glibc-2.32-46/lib/libcrypt.so.1 (0x00007ffff7f6a000)
+	libncursesw.so.6 => /nix/store/2lxqp8hlxb9a2p87adf77x359ylany60-ncurses-6.2/lib/libncursesw.so.6 (0x00007ffff7b8e000)
+	libutil.so.1 => /nix/store/ikl21vjfq900ccbqg1xasp83kadw6q8y-glibc-2.32-46/lib/libutil.so.1 (0x00007ffff7f63000)
+	libm.so.6 => /nix/store/ikl21vjfq900ccbqg1xasp83kadw6q8y-glibc-2.32-46/lib/libm.so.6 (0x00007ffff7a4b000)
+	libgcc_s.so.1 => /nix/store/ikl21vjfq900ccbqg1xasp83kadw6q8y-glibc-2.32-46/lib/libgcc_s.so.1 (0x00007ffff7f49000)
+	libc.so.6 => /nix/store/ikl21vjfq900ccbqg1xasp83kadw6q8y-glibc-2.32-46/lib/libc.so.6 (0x00007ffff788a000)
+	/nix/store/ikl21vjfq900ccbqg1xasp83kadw6q8y-glibc-2.32-46/lib/ld-linux-x86-64.so.2 => /nix/store/ikl21vjfq900ccbqg1xasp83kadw6q8y-glibc-2.32-46/lib64/ld-linux-x86-64.so.2 (0x00007ffff7fd2000)
