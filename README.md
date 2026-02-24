@@ -19,7 +19,9 @@ nixos != nix != home-manager
 ```
 
 NixOS = operating system
+
 Nix = package manager + build system
+
 Home Manager = user-level config layer
 
 This talk is about Nix as a development environment tool for offensive security.
