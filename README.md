@@ -205,29 +205,35 @@ Let’s create a legacy exploit lab.
 
 2012 is arbitrary. It just gives us plenty of Python2 code.
 
-Bashsearchsploit ' ' --cve '2012' \  
+```bash
+searchsploit ' ' --cve '2012' \  
 | grep py \  
 | cut -d '|' -f 2 \  
 | sort -u \  
 | while read line; do searchsploit -m $line ; done
+```
 
 Now we have a pile of old Python exploits.
 
 Most of them break immediately.
 
-Missing requests.  
-Missing Crypto.  
-Broken C extensions.  
-Python2 syntax issues.
+* Missing requests.  
+* Missing Crypto.  
+* Boken C extensions.  
+* Python2 syntax issues.
 
 And then we hit this:
 
-Codepython3 ./22739.py wlp0<redacted>
+```bash
+python3 ./22739.py wlp0<redacted>
+```
 
 It fails with:
 
+```bash
 CodePyLorcon2.Lorcon2Exception:  
 failed to create monitor interface wlp0<redacted>:wlp0<redacted>
+```
 
 This exploit depends on:
 
@@ -390,7 +396,9 @@ With Nix:
 1. Enter environment:
     
 
-Codenix develop github:esp0xdeadbeef/nix-for-offensive-security
+```bash
+nix develop github:esp0xdeadbeef/nix-for-offensive-security
+```
 
 2. Run exploits, test tooling.
     
@@ -398,8 +406,9 @@ Codenix develop github:esp0xdeadbeef/nix-for-offensive-security
     
 4. Clean up:
     
-
-Codenix-collect-garbage -d
+```bash
+nix-collect-garbage -d
+```
 
 System returns to previous state.
 
@@ -428,15 +437,9 @@ Reproducibility includes cleanup.
 
 * * *
 
-If you want, we can also add a short slide explaining:
+# Reproducible Nix Flakes with flake.lock
 
-* `nix flake update`
-    
-* `flake.lock`
-    
-* Why committing the lock file matters
-    
+Running `nix flake update` refreshes your inputs and rewrites `flake.lock` with exact pinned revisions. That file captures the full dependency graph used for the build.
 
-That would complete the lifecycle story:
+Committing `flake.lock` ensures deterministic builds across machines and CI. Without it, dependencies drift and reproducibility is lost.
 
-Create → Use → Reproduce → Clean.
