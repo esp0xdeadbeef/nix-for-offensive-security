@@ -380,9 +380,8 @@ nix-collect-garbage -d
 
 This deletes all unused generations and unreferenced store paths.
 
-It is safe.  
-It does not break your system.  
-It only removes things that are no longer referenced.
+Nix garbage collection removes store paths that are not reachable from any GC root.
+Active profiles and running environments are preserved.
 
 * * *
 
@@ -391,13 +390,8 @@ It only removes things that are no longer referenced.
 You can inspect store usage:
 
 ```bash
-du -sh /nix/store
-```
-
-Or more detailed:
-
-```bash
-nix path-info -Sh /nix/store/*
+du /nix --max-depth 1 -h
+# most space is usually in /nix/store
 ```
 
 * * *
