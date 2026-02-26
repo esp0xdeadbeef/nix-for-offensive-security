@@ -1,9 +1,9 @@
 {
-  description = "Legacy exploit devshell (Python2 default + Python3 + PyLorcon2 + Crypto + full tooling)";
+  description = "Legacy exploit devshell (Python2 + PyLorcon2 pinned to 2013)";
 
   inputs = {
-    # nixpkgs-legacy.url = "github:NixOS/nixpkgs/nixos-21.05"; #  is:
-    nixpkgs-legacy.url = "github:NixOS/nixpkgs/fefb0df7d2ab2e1cabde7312238026dcdc972441";
+    nixpkgs-legacy.url =
+      "github:NixOS/nixpkgs/fefb0df7d2ab2e1cabde7312238026dcdc972441";
   };
 
   outputs = { self, nixpkgs-legacy }:
@@ -21,27 +21,23 @@
             "python-2.7.18.7"
             "python2.7"
             "python2.7-pip"
-            "python3.6"
           ];
       };
 
       py2 = pkgs.python27;
       py2Pkgs = pkgs.python27Packages;
 
-      py3 = pkgs.python36;
-      py3Pkgs = pkgs.python36Packages;
-
+      # ✅ Python2-era lorcon
       lorconSrc = pkgs.fetchFromGitHub {
         owner = "kismetwireless";
         repo = "lorcon";
-        # git ls-remote https://github.com/kismetwireless/lorcon master
-        rev = "4a81d6aaa2c6ac7253ecd182ffe97c6c89411196";
-        sha256 = "sha256-pFhO1BBvHOwH1X6WdcBBaAvQEtIw9OSNvYMKS2SEhzE=";
+        rev = "efd4f3550832e6bff20613d6634b08b8d92eedfc";
+        sha256 = "sha256-MF5LUuot9p7Hh27XsZvSaEkOCPwUJEyNrndjNw+vzIk="; #pkgs.lib.fakeSha256;
       };
 
       lorcon = pkgs.stdenv.mkDerivation {
         pname = "lorcon2";
-        version = "git";
+        version = "git-2013";
         src = lorconSrc;
 
         nativeBuildInputs = [
@@ -61,13 +57,13 @@
         '';
 
         configureFlags = [ "--disable-manpages" ];
-
         installFlags = [ "-i" ];
       };
 
-      pylorcon2 = py3Pkgs.buildPythonPackage {
+      # ✅ Build PyLorcon2 for Python2
+      pylorcon2 = py2Pkgs.buildPythonPackage {
         pname = "PyLorcon2";
-        version = "git";
+        version = "git-2013";
 
         src = lorconSrc;
         sourceRoot = "source/pylorcon2";
@@ -91,7 +87,7 @@
 
         packages = [
 
-          # Python2 primary
+          # Python2 runtime
           py2
           py2Pkgs.pip
           py2Pkgs.setuptools
@@ -100,16 +96,11 @@
           py2Pkgs.pycrypto
           py2Pkgs.pycryptodome
 
-          # Python3 secondary
-          py3
-          py3Pkgs.requests
-          py3Pkgs.pycryptodome
-
-          # lorcon stack
+          # Lorcon stack
           lorcon
           pylorcon2
 
-          # toolchain
+          # Toolchain
           pkgs.gcc
           pkgs.gnumake
           pkgs.pkg-config
@@ -117,37 +108,30 @@
           pkgs.openssl
           pkgs.zlib
 
-          # debugging
+          # Debugging
           pkgs.gdb
           pkgs.strace
           pkgs.ltrace
           pkgs.file
-
-          # man
-          pkgs.man-db
-          pkgs.groff
-          pkgs.man-pages
-          pkgs.man-pages-posix
+          pkgs.iw
+          pkgs.iproute2
+          pkgs.ethtool
         ];
 
-        shellHook = ''
-          unset MANPATH
-          export VENDOR_DIR="$PWD/vendor"
-          mkdir -p "$VENDOR_DIR"
+shellHook = ''
+  unset MANPATH
 
-          export PIP_TARGET="$VENDOR_DIR"
-          export PYTHONPATH="$VENDOR_DIR:$PYTHONPATH"
+  export PATH="${py2}/bin:${py2Pkgs.pip}/bin:$PATH"
+  export LD_LIBRARY_PATH="${lorcon}/lib:$LD_LIBRARY_PATH"
 
-          export PATH="${py2}/bin:${py2Pkgs.pip}/bin:$PATH"
-          alias python=python2
-          alias pip=pip2
+  alias python=python2
+  alias pip=pip2
 
-          echo ""
-          echo "[legacy exploit shell ready]"
-          echo "python  -> $(python --version 2>&1)"
-          echo "python3 -> $(python3 --version 2>&1)"
-          echo ""
-        '';
+  echo ""
+  echo "[legacy python2 wireless shell ready]"
+  echo "python -> $(python --version 2>&1)"
+  echo ""
+'';
       };
     };
 }
